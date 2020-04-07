@@ -18,58 +18,33 @@
 
 <script>
 
-function loadFileNames(dir) {
-    return new Promise((resolve, reject) => {
-        try {
-            var fileNames = new Array();
-            $.ajax({
-                url: dir,
-                success: function (data) {
-                    for(var i = 1; i < $(data).find('li span.name').length; i++){
-                        var elem = $(data).find('li span.name')[i];
-                        fileNames.push(elem.innerHTML);
-                    }
-                    return resolve(fileNames);
-                }
-            });
-        } catch (ex) {
-            return reject(new Error(ex));
-        }
-    });
-}
 
-loadFileNames('math')
-        .then((data) => {
-            console.log(data);
-        })
-        .catch((error) => {
-            alert('Files could not be loaded. please check console for details');
-            console.error(error);
-        });
+var math = ["bayesian_methods.md", "distributions.md", "simple_stats.md"];
 
 
 var pr_content = "";
 
-
-function load_projects(proj_id){
-  if(proj_id <= 0){
+function load_projects(file_id){
+  if(file_id < 0){
     $("#projects_content").append(pr_content);
-    update_right_menu();
+    //update_right_menu();
     return;
   }
-  $.get("math/"+proj_id+".html", function(data){
-      console.log('+++'+proj_id);
+  console.log("math/"+file_id+" "+math[file_id]);
+  $.get("math/"+math[file_id], function(data){
+    return;
+      console.log('+++'+file_id);
       pr_content += data;
 
-      if(proj_id>1){
+      if(file_id>1){
         pr_content += "<br/><br/><br/><br/><hr align=\"center\" width=\"100%\" style=\"display:block; height:1px;border:0; border-top:2px solid #222; margin:5px 0 5px 0; padding:0;\"><br/><br/><br/><br/>";
-        console.log('A'+proj_id);
+        console.log('A'+file_id);
       }
       else{
         pr_content += "<br/><br/><br/><br/>";
-        console.log('B'+proj_id);
+        console.log('B'+file_id);
       }
-      load_projects(proj_id-1);
+      load_projects(file_id-1);
   });
 
 }
@@ -80,7 +55,7 @@ $(function(){
   pr_content = "";
 
   console.log('O');
-  //load_projects(6);
+  load_projects(math.length-1);
 });
 
 
